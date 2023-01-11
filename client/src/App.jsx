@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef, Suspense } from "react";
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 // Import Custom Hooks
-import useClickTracker from './hooks/useClickTracker.jsx';
-import useCarouselSliderLogic from './hooks/useCarouselSliderLogic.jsx';
 import useOverviewProductLogic from './hooks/useOverviewProductLogic.jsx';
 import useRelatedProductLogic from './hooks/useRelatedProductLogic.jsx';
 import useReviewsLogic from './hooks/useReviewsLogic.jsx';
+import useLocalStorageYourOutfitLogic from './hooks/useLocalStorageYourOutfitLogic.jsx';
+import useCarouselSliderLogic from './hooks/useCarouselSliderLogic.jsx';
 // Import Components
 import Header from "./components/Header.jsx";
 const Overview = React.lazy(() => import('./components/overview/overview.jsx'));
@@ -29,6 +29,7 @@ const App = () => {
   const [featuresPrimaryProduct, setFeaturesPrimaryProduct] = useState('');
   const [productStyles, setProductStyles] = useState([]);
   const [productInfo, setProductInfo] = useState([]);
+  const [cartNumber, setCartNumber] = useState(0); // Pass into Header component
 
   // Related Product/YourOutfit States (currentProductOutfitCard might have to do with Overview)
   const [currentProductOutfitCard, setCurrentProductOutfitCard] = useState({});
@@ -42,6 +43,7 @@ const App = () => {
   const [reviewList, setReviewList] = useState([]);
   const [reviewMeta, setReviewMeta] = useState({});
   const [rating, setRating] = useState(0);
+
   // QnA State
   const [productQnAData, setProductQnAData] = useState([]);
 
@@ -49,18 +51,24 @@ const App = () => {
   const [bottomHalfView, setBottomHalfView] = useState(false);
   const loadBottomBoundary = useRef(null);
 
-  // const { clickInfo, onClickTracker } = useClickTracker();
+  // INITIAL GET Request for new product page
+  useEffect(() => {
+    if (focusProductId === 0) {
+      // This redirects for now to Item Page (Default set to product id: 71704)
+      axios.get(`/`);
+      return;
+    } else {
+      return getData(); // Logic Below
+    }
+  }, [focusProductId])
 
-  const [cartNumber, setCartNumber] = useState(0);
-
-  // INIT GET Questions&Answers (tucked away for lazy loading)
-  // Logic for Lazy Loading on user downwards scroll
+  // INIT GET Questions&Answers (After Lazy Loading...)
   useEffect(() => {
     if (focusProductId === 0) return;
     if (productInfo.length === 0) return;
     if (!loadBottomBoundary?.current) return;
 
-    // Create Observer and set callback action
+    // observer for lazy loading and then callback action to GET QnA data
     const observer = new IntersectionObserver((yourOutfitDiv) => {
       if (yourOutfitDiv[0].isIntersecting) {
         // console.log("Observed Boundary! Loading QnA and Review Modules...");
@@ -76,40 +84,11 @@ const App = () => {
         observer.disconnect();
       }
     })
-
     observer.observe(loadBottomBoundary.current);
   }, [focusProductId, productInfo])
 
-  // Logic for parsing Local Storage for saved Your Outfit
-  useEffect(() => {
-    const savedOutfitState = JSON.parse(localStorage.getItem("yourOutfitState"));
-
-    if (savedOutfitState) {
-      if (savedOutfitState.length > 0) {
-        setYourOutfitList(savedOutfitState);
-      }
-    }
-    var targetIdInUrl = parseInt(window.location.pathname[4] + window.location.pathname[5] + window.location.pathname[6] + window.location.pathname[7] + window.location.pathname[8]);
-    setFocusProductId(targetIdInUrl);
-  }, [])
-
-  // Logic for saving the Your Outfit to local storage
-  useEffect(() => {
-    // console.log('saving to localStorage...', yourOutfitList)
-    localStorage.setItem("yourOutfitState", JSON.stringify(yourOutfitList));
-  }, [yourOutfitList]);
-
-  // INITIAL GET Request for new product page
-  useEffect(() => {
-    if (focusProductId === 0) {
-      return;
-    } else {
-      return getData(); // Logic Below
-    }
-  }, [focusProductId])
-
-  // Redirects for now to Item Page (Default set to product id: 71704)
-  axios.get(`/`);
+  // Logic for parsing and saving products in Local Storage for Your Outfit Carousel
+  useLocalStorageYourOutfitLogic(setYourOutfitList, setFocusProductId, yourOutfitList);
 
   // Main Data fetching function for whole page
   var getData = () => {
@@ -204,7 +183,7 @@ const App = () => {
       time: new Date(Date.now()).toString()
     })
     .then((response) => {
-      console.log("API SUCCESSFUL Click Tracking Response: ", response);
+      // console.log("API SUCCESSFUL Click Tracking Response: ", response); // to see click API in console
     })
     .catch ((err) => {
       console.log("API FAILURE: Click Tracking ERROR: ", err)
@@ -213,17 +192,16 @@ const App = () => {
 
   return (
 
-    // <div onClick={onClickTracker}>
     <div onClick={(event)=>handleTrackClick(event.target)}>
 
       <Header cartNumber={cartNumber} onClickDeleteCart={onClickDeleteCart} />
       <h2 data-testid='testYourOutfitCard'>Golden Fan Shop</h2>
 
-      <div className="initSpinnerContainer">
+      <main className="initSpinnerContainer">
         <Suspense fallback={<img src={Spinner} className='initSpinner' alt="Loading..." />}>
           <Overview rating={rating} serverError={serverError} info={productInfo} styles={productStyles} onClickYourOutfit={onClickYourOutfit} onClickAddToCart={onClickAddToCart} />
         </Suspense>
-      </div>
+      </main>
 
       <div className="margins-nonOverview-styling" >
         <Description slogan={productInfo.slogan} desc={productInfo.description} featuresPrimaryProductString={featuresPrimaryProduct} />
@@ -261,6 +239,7 @@ const App = () => {
           </Suspense>
         )}
       </div>
+
     </div>
   );
 };

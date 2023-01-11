@@ -201,15 +201,15 @@ const ReviewForm = (props) => {
               <p className="characteristic-text">{sizeRating}</p>
                 <div className="radio-buttons">
                   <input type="radio" id="one" name="size" value="1" onClick={() => sizeSelection("one")}/>
-                  <label for="one">1.</label>
+                  <label htmlFor="one">1.</label>
                   <input type="radio" id="two" name="size" value="2" onClick={() => sizeSelection("two")}/>
-                  <label for="two">2.</label>
+                  <label htmlFor="two">2.</label>
                   <input type="radio" id="three" name="size" value="3" onClick={() => sizeSelection("three")}/>
-                  <label for="three">3.</label>
+                  <label htmlFor="three">3.</label>
                   <input type="radio" id="four" name="size" value="4" onClick={() => sizeSelection("four")}/>
-                  <label for="four">4.</label>
+                  <label htmlFor="four">4.</label>
                   <input type="radio" id="five" name="size" value="5" onClick={() => sizeSelection("five")}/>
-                  <label for="five">5.</label>
+                  <label htmlFor="five">5.</label>
                 </div>
                 <div className="hi-lo-group-text">
                   <div>A size too small</div>

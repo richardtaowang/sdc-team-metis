@@ -17,13 +17,9 @@ const Overview = (props) => {
   const [expandedView, setExpandedView] = useState(false);
   const [primaryImageIndex, setPrimaryImageIndex] = useState(0);
 
-
-
   useEffect(() => {
     setStyleIndex(0);
   }, [props.info]);
-
-
 
   return (
     <div widgetname="Overview" data-testid='testOverview'>

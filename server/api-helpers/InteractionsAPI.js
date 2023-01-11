@@ -4,7 +4,7 @@ const TOKEN = process.env.API_TOKEN;
 exports.postClickTrack = (req, res) => {
 
   var clickTrackData = req.body;
-  console.log("🚀 ~ file: InteractionsAPI.js:7 ~ clickTrackData", clickTrackData)
+  // console.log("🚀 ~ file: InteractionsAPI.js:7 ~ clickTrackData", clickTrackData)
 
   var options = {
     url: 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/interactions',
