@@ -7,6 +7,7 @@ exports.redirectFromHome = (req, res) => {
 exports.overviewData = (req, res) => {
 
   var incomingParamProductId = req.query.id;
+  // console.log("🚀 ~ file: ProductsAPI.js:10 ~ incomingParamProductId", incomingParamProductId)
 
   const options = {
     method: 'GET',

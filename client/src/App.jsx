@@ -4,7 +4,9 @@ import axios from 'axios';
 // Import Custom Hooks
 import useClickTracker from './hooks/useClickTracker.jsx';
 import useCarouselSliderLogic from './hooks/useCarouselSliderLogic.jsx';
+import useOverviewProductLogic from './hooks/useOverviewProductLogic.jsx';
 import useRelatedProductLogic from './hooks/useRelatedProductLogic.jsx';
+import useReviewsLogic from './hooks/useReviewsLogic.jsx';
 // Import Components
 import Header from "./components/Header.jsx";
 const Overview = React.lazy(() => import('./components/overview/overview.jsx'));
@@ -47,10 +49,11 @@ const App = () => {
   const [bottomHalfView, setBottomHalfView] = useState(false);
   const loadBottomBoundary = useRef(null);
 
-  const { clickInfo, onClickTracker } = useClickTracker();
+  // const { clickInfo, onClickTracker } = useClickTracker();
 
   const [cartNumber, setCartNumber] = useState(0);
 
+  // INIT GET Questions&Answers (tucked away for lazy loading)
   // Logic for Lazy Loading on user downwards scroll
   useEffect(() => {
     if (focusProductId === 0) return;
@@ -65,8 +68,7 @@ const App = () => {
 
         axios.get('/getProductQnA', { params: { id: focusProductId } })
           .then(function (response) {
-            var questionData = response.data.results;
-            setProductQnAData(questionData);
+            setProductQnAData(response.data.results);
           })
           .catch(function (error) {
             console.log('error GET QnA Data: ', error);
@@ -102,96 +104,25 @@ const App = () => {
     if (focusProductId === 0) {
       return;
     } else {
-      return getData(); // Below
+      return getData(); // Logic Below
     }
   }, [focusProductId])
 
   // Redirects for now to Item Page (Default set to product id: 71704)
   axios.get(`/`);
 
-  // Review Module Helper Function
-  const updateReviewList = (newReviewList) => {
-    setReviewList(newReviewList);
-  }
-
   // Main Data fetching function for whole page
   var getData = () => {
 
     // INIT GET General Data & Styles of target product
-    axios.get(`/ipCurrent`, { params: { id: focusProductId } })
-      .then(function (response) {
-        // console.log("🚀 ~ file: App.jsx:126 ~ response", response)
-        var generalProductInfo = response.data[0];
-        setProductInfo(generalProductInfo);
-        var featuresArrayToChangeKey = generalProductInfo.features;
-        var primaryName = generalProductInfo.name;
-
-        var currentProductCardData = response.data[2];
-
-        setCurrentProductOutfitCard(currentProductOutfitCard => ({
-          ...currentProductCardData
-        }));
-
-        (async () => {
-          const myAsyncChangeKey = async (obj) => {
-            obj['featurePrimary'] = obj['feature'];
-            delete obj['feature'];
-            obj['valuePrimary'] = obj['value'];
-            delete obj['value'];
-            obj['namePrimary'] = primaryName;
-            return obj;
-          };
-          const tasks = featuresArrayToChangeKey.map(objOfFeatures => myAsyncChangeKey(objOfFeatures))
-          try {
-            const primaryFeatures = await Promise.all(tasks);
-            setFeaturesPrimaryProduct(JSON.stringify(primaryFeatures));
-          } catch (err) {
-            console.error(err)
-          }
-        })()
-
-        var allStylesArray = response.data[1].results;
-        setProductStyles(allStylesArray);
-
-        // Getting Photo URL of current Product and saving it
-        for (var i = 0; i < allStylesArray.length; i++) {
-          var currentStyleObj = allStylesArray[i];
-          if (currentStyleObj['default?'] === true) {
-            var photoUrl = currentStyleObj.photos[0].thumbnail_url;
-            currentProductCardData.current_thumbnail = photoUrl;
-          }
-          if (i === allStylesArray.length - 1) {
-            var photoUrl = allStylesArray[0].photos[0].thumbnail_url;
-            currentProductCardData.current_thumbnail = photoUrl;
-          }
-        }
-        setCurrentProductOutfitCard(currentProductOutfitCard => ({
-          ...currentProductCardData
-        }));
-      })
-      .catch(function (error) {
-        console.log('error GET GeneralInfo: ', error);
-      })
+    useOverviewProductLogic(focusProductId, setProductInfo,
+      setCurrentProductOutfitCard, setFeaturesPrimaryProduct, setProductStyles);
 
     // INIT GET Related Products Data
     useRelatedProductLogic(focusProductId, setRelatedProductsData);
 
     // INIT GET Product REVIEWS Data & Meta
-    axios.get('/getProductReviews', { params: { id: focusProductId } })
-      .then(function (response) {
-        // console.log("🚀 ~ file: App.jsx:190 ~ response", response)
-        var reviews = response.data[0].results;
-        setReviewList(reviews);
-        var average = getAverageRating(reviews);
-        setRating(average);
-
-        // Combined Meta Data
-        var meta = response.data[1];
-        setReviewMeta(meta);
-      })
-      .catch(function (error) {
-        console.log('error GET Reviews Data: ', error);
-      });
+    useReviewsLogic(focusProductId, setReviewList, setRating, setReviewMeta);
 
     // INIT GET Cart Data
     axios.get('/getCart')
@@ -260,9 +191,31 @@ const App = () => {
       })
   }
 
+  // Passed as prop into Review Module
+  var updateReviewList = (newReviewList) => {
+    setReviewList(newReviewList);
+  }
+
+  const handleTrackClick = (target) => {
+    const widgetname = target.getAttribute('widgetname');
+    axios.post('/clickTrackPost', {
+      element: target.tagName ? target.tagName : "null",
+      widget: target.getAttribute("widgetname") ? target.getAttribute("widgetname") : "null",
+      time: new Date(Date.now()).toString()
+    })
+    .then((response) => {
+      console.log("API SUCCESSFUL Click Tracking Response: ", response);
+    })
+    .catch ((err) => {
+      console.log("API FAILURE: Click Tracking ERROR: ", err)
+    })
+  }
+
   return (
 
-    <div onClick={onClickTracker}>
+    // <div onClick={onClickTracker}>
+    <div onClick={(event)=>handleTrackClick(event.target)}>
+
       <Header cartNumber={cartNumber} onClickDeleteCart={onClickDeleteCart} />
       <h2 data-testid='testYourOutfitCard'>Golden Fan Shop</h2>
 
@@ -312,15 +265,4 @@ const App = () => {
   );
 };
 
-const getAverageRating = (reviewList) => {
-  var total = 0;
-  reviewList.forEach((review) => {
-    total += review.rating;
-  });
-  var average = total / reviewList.length;
-  var rounded = Math.round(average * 10) / 10;
-  return rounded;
-}
-
-export { getAverageRating };
 export default App;

@@ -2,6 +2,7 @@ let axios = require('axios');
 
 exports.getCart = (req, res) => {
 
+  // console.log('Cart Pinged Server')
   const options = {
     method: 'GET',
     url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/cart`,

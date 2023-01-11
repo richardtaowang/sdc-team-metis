@@ -33,8 +33,8 @@ const ImageGallery = (props) => {
     <div widgetname="Overview" data-testid='testImageGallery' >
       <div widgetname="Overview" id="main-img">
 
-          <img widgetname="Overview" id="primary-img" className="maxDimensions" src={props.styles[props.styleIndex]?.photos[primaryImageIndex].url}
-            onClick={() => { props.setExpandedView(true); props.setPrimaryImageIndex(primaryImageIndex); }} />
+        <img widgetname="Overview" id="primary-img" className="maxDimensions" src={props.styles[props.styleIndex]?.photos[primaryImageIndex].url}
+          onClick={() => { props.setExpandedView(true); props.setPrimaryImageIndex(primaryImageIndex); }} />
         < AiOutlineExpand onClick={() => { props.setPrimaryImageIndex(primaryImageIndex); props.setExpandedView(true); }} size="1.5em" color="white" className="expanded" />
 
         <div className='photoList'>
@@ -56,7 +56,7 @@ const ImageGallery = (props) => {
               size="1.5em" color="gray" className="down-Arrow" onClick={() => arrowClicked(1)} />
           }
         </div>
-        </div>
+      </div>
       {/* </div> */}
     </div>
   )

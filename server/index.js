@@ -6,11 +6,11 @@ const cors = require("cors");
 const multer  = require('multer') // for image uploads in Reviews Module
 
 // CONTROLLERS
-const ProductsController = require('./controllers/ProductsAPI.js');
-const ReviewsController = require('./controllers/ReviewsAPI.js');
-const QuestionsController = require('./controllers/QuestionsAPI.js');
-const CartController = require("./controllers/CartAPI.js");
-const InteractionsController = require('./controllers/InteractionsAPI.js');
+const ProductsController = require('./api-helpers/ProductsAPI.js');
+const ReviewsController = require('./api-helpers/ReviewsAPI.js');
+const QuestionsController = require('./api-helpers/QuestionsAPI.js');
+const CartController = require("./api-helpers/CartAPI.js");
+const InteractionsController = require('./api-helpers/InteractionsAPI.js');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
