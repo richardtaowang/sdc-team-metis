@@ -1,50 +1,70 @@
+// Quick Link to this API Doc: https://learn-2.galvanize.com/cohorts/3414/blocks/94/content_files/Front%20End%20Capstone/project-atelier/qa.md
 const axios = require('axios');
 
-exports.putHelpClick = (req, res) => {
 
-  const review_id = req.body.review_id;
-  console.log('review id in server helpClick: ', review_id);
 
-  const options = {
-    method: 'PUT',
-    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews/${review_id}/helpful`,
-    headers: { Authorization: process.env.AUTH_SECRET },
-    // data: review_id
-  };
-  axios(options)
-  .then((results) => {
-    var data = JSON.parse(JSON.stringify(results.data));
-    res.status(204).send(data);
-  })
-  .catch((error) => {
-    console.log('helpful server error: ', error);
-    res.status(500).send(error);
-  });
+exports.getProductQnAControl = (req, res) => {
 
-};
-
-exports.putReportClick = (req, res) => {
-
-  const review_id = req.body.review_id;
-  console.log('review id in server reportClick: ', review_id);
+  var incomingParamProductId = req.query.id;
 
   const options = {
-    method: 'PUT',
-    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews/${review_id}/report`,
+    method: 'GET',
+    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/qa/questions?product_id=${incomingParamProductId}`,
     headers: { Authorization: process.env.AUTH_SECRET },
-    // data: review_id
   };
   axios(options)
-  .then((results) => {
-    var data = JSON.parse(JSON.stringify(results.data));
-    res.status(204).send(data);
+  .then((result) => {
+    res.status(200).send(result.data)
   })
-  .catch((error) => {
-    console.log('report server error: ', error);
-    res.status(500).send(error);
-  });
+  .catch((err) => {
+    console.log(err);
+    res.status(500).send(err)
+  })
+}
 
-};
+exports.postQuestionForm = (req, res) => {
+  var incomingQuestion = req.body;
+  const options = {
+    method: 'POST',
+    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/qa/questions`,
+    headers: {Authorization: process.env.AUTH_SECRET},
+    "Content-Type": 'application/json',
+    data: incomingQuestion
+  }
+  axios(options)
+  .then(results => {
+    console.log('Success: ',results.data);
+    var created = JSON.parse(JSON.stringify(results.data));
+    res.status(201).send(created);
+  })
+  .catch(err => {
+    console.log('failure in the  Question api server: ', err);
+    res.status(500).send(err)
+  })
+}
+
+exports.postAnswerForm = (req, res) => {
+  var incomingAnswer = req.body;
+  var questionId = incomingAnswer.questionId;
+  delete incomingAnswer.questionId;
+  const options = {
+    method: 'POST',
+    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/qa/questions/${questionId}/answers`,
+    headers: {Authorization: process.env.AUTH_SECRET},
+    "Content-Type": 'application/json',
+    data: incomingAnswer
+  }
+  axios(options)
+  .then(results => {
+    console.log('Success: ', results.data);
+    var created = JSON.parse(JSON.stringify(results.data));
+    res.status(201).send(created)
+  })
+  .catch(err => {
+    console.log('failure in the Answer api server: ', err);
+    res.status(500).send(err)
+  })
+}
 
 exports.questionHelpfulness = (req, res) => {
   var questionId = req.body.question_id;
@@ -125,23 +145,3 @@ exports.answerReported = (req,res) => {
     res.status(500).send(err);
   })
 }
-
-exports.deleteCart = (req,res) => {
-
-  const options = {
-    method: 'DELETE',
-    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/cart`,
-    headers: {Authorization: process.env.AUTH_SECRET}
-  };
-
-  axios(options)
-  .then(results => {
-    var data = JSON.parse(JSON.stringify(results.data));
-    res.status(204).send(data);
-  })
-  .catch(err => {
-    console.log('Server error Delete cart:', err);
-    res.status(500).send(err);
-  })
-}
-

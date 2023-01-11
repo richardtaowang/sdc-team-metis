@@ -13,7 +13,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.jsx$/,
         exclude: /nodeModules/,
         use: {
           loader: "babel-loader",
@@ -29,10 +29,4 @@ module.exports = {
       },
     ],
   },
-  //Potential fix for deployment bug?
-  // resolve: {
-  //   alias: {
-  //     "react-icons": path.resolve(__dirname, "./node_modules/react-icons"),
-  //   },
-  // },
 };

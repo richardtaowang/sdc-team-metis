@@ -41,14 +41,16 @@ To build webpack, open a new terminal tab and run the following command:
 
 You should see the following message: "webpack <version> compiled successfully..."
 
+Configure your API tokens Create an `.env` file. In this file, you will need to create github token: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token Add your token with the key name `AUTH_SECRET`
+
+Create a cloudinary account: https://cloudinary.com/. After creating an account, go to your dashboard, and copy your Cloudiary URL, Cloudinary Username, Cloudinary API Key, and Cloudinary API secret into the .env file. The key names should be `CLOUDINARY_URL`, `CLOUDINARY_USER_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET`.
+
 With these steps completed, you should now be able to access the Golden Fan Shop from your local host for continued development. Thank you for choosing Golden Fan Shop!
 
 ## ⚡️ Benchmarks
 As of the January 6, 2023 deployment and our first phase of optimization, this is our LightHouse audit report for the product URL: http://goldenfanshop.com
-  
-  ![alt text](https://uca9530c3470e935bd90b7161967.previews.dropboxusercontent.com/p/thumb/ABzeoj2D8ntQ9q3DoNMWkWJdCEK5rVDtHxJNr6H3fgm7XOWOxvvFIYuFueMDd5BElrO2TJCwdEjwRi_fmVqfzcaX0FX-NF8BYhHkrQbyHpKJ_Pp_WCzFtM9D22MvNbicOozY2P6kxUZ7hsAdpT35hgDxt897AAF4h3GmM9-aZaI3Avk7G33txhNP0yMpaWHgU3h80BX_E_Zs2t-QINJhmvlARPMe2aQRfKt5RQ2g961WeEmZgXb3orVGndkfXuluNS6Vq0fqJiTKuLBN9xMCFsdy29v6rHHE18K4yXW58yJwQULAC-MCJ3xQ8yFdA2jkwTQciWjLc2Xk9UIAvlz5Cm-y17YUgv6bVFDQ7gSvWFrljQ8AecywFvpKvlW8X7SrE-bkRaejSc6TKRktEbiRJ1zkWJBM-q3K4ZQZJVXAZb0FDA/p.png)
 
-
+https://www.dropbox.com/s/k4kmclh2593wgda/Final%20deployment%20-%20Screen%20Shot%202023-01-06%20at%2010.01.43%20AM.png?dl=0
 
 
 ## ☕ Team Members

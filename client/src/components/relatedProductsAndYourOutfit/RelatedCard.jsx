@@ -3,19 +3,16 @@ import Popup from '../Popup.jsx';
 import ComparisonTable from './ComparisonTable.jsx';
 import ProductRating from '../reviews/ProductRating.jsx';
 import axios from 'axios';
-// import getAverageRating from '../../index.jsx';
 import { getAverageRating } from '../../App.jsx';
-
 
 const RelatedCard = React.forwardRef((props, ref) => {
 
-  // const [formView, setFormView] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [imgError, setImgError] = useState(true);
   const [ratingRelatedCard, setRatingRelatedCard] = useState(0);
 
   useEffect(() => {
-    axios.get('/getProductReviews', { params: { id: props.related_id } })
+    axios.get('/cardStars', { params: { id: props.related_id } })
       .then(function (response) {
         var reviews = response.data.results;
         var average = getAverageRating(reviews);

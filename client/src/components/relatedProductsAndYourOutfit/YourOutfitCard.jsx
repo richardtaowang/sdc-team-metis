@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProductRating from '../reviews/ProductRating.jsx';
 import axios from 'axios';
-// import getAverageRating from '../../index.jsx';
 import { getAverageRating } from '../../App.jsx';
 
 const YourOutfitCard = React.forwardRef((props, ref) => {
@@ -9,7 +8,7 @@ const YourOutfitCard = React.forwardRef((props, ref) => {
   const [ratingYourOutfitCard, setRatingYourOutfitCard] = useState(0);
 
   useEffect(() => {
-    axios.get('/getProductReviews', { params: { id: props.current_id } })
+    axios.get('/cardStars', { params: { id: props.current_id } })
       .then(function (response) {
         var reviews = response.data.results;
         var average = getAverageRating(reviews);

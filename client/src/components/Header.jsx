@@ -23,7 +23,7 @@ const Header = (props) => {
 
 
   return (
-    <div className="header" widgetname="Header" data-testId="header">
+    <div className="header" widgetname="Header" data-testid="header">
       {isOpen && <Popup
         content={<>
           <CartForm cartnumber={props.cartNumber} onClickDeleteCart={props.onClickDeleteCart}/>

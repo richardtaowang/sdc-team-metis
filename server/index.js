@@ -1,72 +1,96 @@
-// EXPRESS SERVER Index
-
 require('dotenv').config();
+const compression = require('compression');
 const express = require ("express");
 const axios = require ('axios')
-const app = express();
 const cors = require("cors");
-const initGetData = require("./controllers/initGetData.js");
-const postData = require('./controllers/postData.js');
-const putData = require('./controllers/putData.js');
-//for image uploads
-const multer  = require('multer')
+const multer  = require('multer') // for image uploads in Reviews Module
+
+// CONTROLLERS
+const ProductsController = require('./controllers/ProductsAPI.js');
+const ReviewsController = require('./controllers/ReviewsAPI.js');
+const QuestionsController = require('./controllers/QuestionsAPI.js');
+const CartController = require("./controllers/CartAPI.js");
+const InteractionsController = require('./controllers/InteractionsAPI.js');
+
+const app = express();
 const upload = multer({ dest: 'uploads/' });
 
-const deleteData = require('./controllers/deleteData.js');
-const compression = require('compression');
-
 app.use(express.json());
-app.use(cors()); // Not sure if needed
+app.use(cors());
 app.use(compression())
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/ip/:id', express.static(__dirname + '/../client/dist'));
+
+// ==============================================
+//       Home Page Init Reroute
+// ==============================================
+
+app.get('/', ProductsController.redirectFromHome);
+
+// ==============================================
+//       Questions Routes
+// ==============================================
+
+app.get('/getProductQnA', QuestionsController.getProductQnAControl);
+
+app.post('/submitQuestion', QuestionsController.postQuestionForm);
+
+app.post('/submitAnswer', QuestionsController.postAnswerForm);
+
+app.put('/helpfulQuestion', QuestionsController.questionHelpfulness);
+
+app.put('/reportedQuestion', QuestionsController.questionReported);
+
+app.put('/helpfulAnswer', QuestionsController.answerHelpfulness);
+
+app.put('/reportAnswer', QuestionsController.answerReported);
+
+// ==============================================
+//       Products Routes
+// ==============================================
+
+app.get('/ipCurrent', ProductsController.overviewData);
+
+app.get('/getProductStyles', ProductsController.getProductStylesControl);
+
+// ==============================================
+//       Ratings and Reviews Routes
+// ==============================================
+app.get('/getProductReviews', ReviewsController.initReviewData);
+
+app.get('/cardStars', ReviewsController.getProductReviewsControl);
+
+app.post('/uploadImg', upload.any(), ReviewsController.postImg);
+
+app.post('/submitReview', ReviewsController.postReviewForm);
+
+app.put('/helpClick', ReviewsController.putHelpClick);
+
+app.put('/reportClick', ReviewsController.putReportClick);
+
+// ==============================================
+//       Related Routes
+// ==============================================
+
+app.get('/ipRelated', ProductsController.getRelatedProductCardControl);
+
+app.get('/getProductRelated', ProductsController.getProductRelatedControl);
+
+// ==============================================
+//       Interaction Route (Click Tracking)
+// ==============================================
+
+app.post('/clickTrackPost', InteractionsController.postClickTrack);
+
+// ==============================================
+//       Cart Routes
+// ==============================================
+app.get('/getCart', CartController.getCart);
+
+app.post('/addToCart', CartController.postAddToCart);
+
+app.delete('/deleteCart', CartController.deleteCart);
+
+
 app.listen(3000, () => console.log('Our Server is listening on port 3000...'));
-
-// ROUTES
-
-app.get('/', initGetData.redirectFromHome);
-
-app.get('/ipCurrent', initGetData.getCurrentProductCardControl);
-// app.get('/ip/:id', initGetData.getCurrentProductCardControl);
-
-app.get('/ipRelated', initGetData.getRelatedProductCardControl);
-
-app.get('/getProductStyles', initGetData.getProductStylesControl);
-
-app.get('/getProductRelated', initGetData.getProductRelatedControl);
-
-app.get('/getProductReviews', initGetData.getProductReviewsControl);
-
-app.get('/getProductReviewMeta', initGetData.getProductReviewMeta);
-
-app.get('/getProductQnA', initGetData.getProductQnAControl);
-
-app.post('/uploadImg', upload.any(), postData.postImg);
-
-app.get('/getCart', initGetData.getCart);
-
-app.post('/submitReview', postData.postReviewForm);
-
-app.post('/submitQuestion', postData.postQuestionForm);
-
-app.post('/submitAnswer', postData.postAnswerForm);
-
-app.post('/clickTrackPost', postData.postClickTrack);
-
-app.post('/addToCart', postData.postAddToCart);
-
-app.delete('/deleteCart', deleteData.deleteCart);
-
-app.put('/helpClick', putData.putHelpClick);
-
-app.put('/reportClick', putData.putReportClick);
-
-app.put('/helpfulQuestion', putData.questionHelpfulness);
-
-app.put('/reportedQuestion', putData.questionReported);
-
-app.put('/helpfulAnswer', putData.answerHelpfulness);
-
-app.put('/reportAnswer', putData.answerReported);
-

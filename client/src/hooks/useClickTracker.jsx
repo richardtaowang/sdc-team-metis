@@ -16,7 +16,8 @@ const useClickTracker = () => {
 
     axios.post('/clickTrackPost', clickInfo)
     .then((response) => {
-      console.log("API SUCCESSFUL Click Tracking Response: ", response, " Here's the info: ", clickInfo);
+      // UnComment to see click tracking in console
+      // console.log("API SUCCESSFUL Click Tracking Response: ", response, " Here's the info: ", clickInfo);
     })
     .catch ((err) => {
       console.log("API FAILURE: Click Tracking ERROR: ", err)
