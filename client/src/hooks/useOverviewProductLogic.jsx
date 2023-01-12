@@ -1,17 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import useRelatedProductLogic from './useRelatedProductLogic.jsx';
 
-function useOverviewProductLogic(focusMainID, setUseProductInfo, setUseCurrentProductOutfitCard, setUseFeaturesPrimaryProduct, setUseProductStyles) {
+function useOverviewProductLogic(focusMainID, setUseProductInfo, setUseCurrentProductOutfitCard, setUseFeaturesPrimaryProduct, setUseProductStyles, setRelatedProductsData) {
   // GET Main Product Data
-  axios.get(`/ipCurrent`, { params: { id: focusMainID } })
+  axios.get(`/currentProduct`, { params: { id: focusMainID } })
   .then(function (response) {
     // console.log("🚀 ~ file: App.jsx:126 ~ response", response)
-    var generalProductInfo = response.data[0];
+    var generalProductInfo = response.data.product;
     setUseProductInfo(generalProductInfo);
     var featuresArrayToChangeKey = generalProductInfo.features;
     var primaryName = generalProductInfo.name;
 
-    var currentProductCardData = response.data[2];
+    var currentProductCardData = response.data.current;
 
     setUseCurrentProductOutfitCard(currentProductOutfitCard => ({
       ...currentProductCardData
@@ -35,7 +36,7 @@ function useOverviewProductLogic(focusMainID, setUseProductInfo, setUseCurrentPr
       }
     })()
 
-    var allStylesArray = response.data[1].results;
+    var allStylesArray = response.data.styles.results;
     setUseProductStyles(allStylesArray);
 
     // Getting Photo URL of current Product and saving it
@@ -50,9 +51,14 @@ function useOverviewProductLogic(focusMainID, setUseProductInfo, setUseCurrentPr
         currentProductCardData.current_thumbnail = photoUrl;
       }
     }
+
     setUseCurrentProductOutfitCard(currentProductOutfitCard => ({
       ...currentProductCardData
     }));
+
+    // INIT GET Related Products Data (Can ignore for SDC)
+    useRelatedProductLogic(focusMainID, setRelatedProductsData, response.data.related);
+
   })
   .catch(function (error) {
     console.log('error GET GeneralInfo: ', error);

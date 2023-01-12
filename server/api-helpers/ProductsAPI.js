@@ -4,72 +4,79 @@ exports.redirectFromHome = (req, res) => {
   res.redirect('/ip/71704')
 }
 
-exports.overviewData = (req, res) => {
-
-  var incomingParamProductId = req.query.id;
-  // console.log("🚀 ~ file: ProductsAPI.js:10 ~ incomingParamProductId", incomingParamProductId)
-
+let SingleProductGet = async (id) => {
   const options = {
     method: 'GET',
-    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/products/${incomingParamProductId}`,
+    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/products/${id}`,
     headers: { Authorization: process.env.AUTH_SECRET },
   };
-
-  const options2 = {
-    method: 'GET',
-    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/products/${incomingParamProductId}/styles`,
-    headers: { Authorization: process.env.AUTH_SECRET },
-  };
-
-  var currentProductCardData = {};
-  var combined = [];
-
-  axios(options)
-    .then((result) => {
-      var generalProductInfo = result.data;
-      currentProductCardData['current_name'] = generalProductInfo.name;
-      currentProductCardData.current_category = generalProductInfo.category;
-      currentProductCardData.current_price = generalProductInfo.default_price;
-      currentProductCardData.current_id = generalProductInfo.id;
-      currentProductCardData.current_features = generalProductInfo.features;
-
-      combined.push(result.data);
-
-      // second API call
-      axios(options2)
-      .then((result) => {
-        combined.push(result.data, currentProductCardData);
-        res.status(200).send(combined)
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).send(err)
-      })
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err)
-    })
+  try {
+    let current = await axios(options);
+    return current.data;
+  }
+  catch (err) {
+    console.log('err in single product get', err);
+  }
 }
 
-exports.getCurrentProductCardControl = (req, res) => {
-
-  var incomingParamProductId = req.query.id;
-
-  const options = {
+let Styles = async (id) => {
+  const options2 = {
     method: 'GET',
-    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/products/${incomingParamProductId}`,
+    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/products/${id}/styles`,
     headers: { Authorization: process.env.AUTH_SECRET },
   };
+  try {
+    let styles = await axios(options2);
+    return styles.data;
+  }
+  catch (err) {
+    console.log('err in styles get', err);
+  }
+}
 
-  axios(options)
-    .then((result) => {
-      res.status(200).send(result.data)
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err)
-    })
+let Similar = async (id) => {
+  const options3 = {
+    method: 'GET',
+    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/products/${id}/related`,
+    headers: { Authorization: process.env.AUTH_SECRET },
+  };
+  try {
+    let similar = await axios(options3);
+    return similar.data;
+  }
+  catch (err) {
+    console.log('err in similar products get', err);
+  }
+}
+exports.overviewData = async (req, res) => {
+
+  var incomingParamProductId = req.query.id;
+  var currentProductCardData = {};
+
+  try {
+    let productDetails = {};
+
+    let selectedProduct = await SingleProductGet(incomingParamProductId);
+    let selectedStyles = await Styles(incomingParamProductId);
+    let selectedRelated = await Similar(incomingParamProductId);
+
+    currentProductCardData['current_name'] = selectedProduct.name;
+    currentProductCardData.current_category = selectedProduct.category;
+    currentProductCardData.current_price = selectedProduct.default_price;
+    currentProductCardData.current_id = selectedProduct.id;
+    currentProductCardData.current_features = selectedProduct.features;
+
+    productDetails.product = selectedProduct;
+    productDetails.styles = selectedStyles;
+    productDetails.related = selectedRelated;
+    productDetails.current = currentProductCardData;
+
+    res.send(productDetails);
+    // return productDetails;
+  }
+  catch (err) {
+    console.log('err in current product get details', err);
+  }
 }
 
 exports.getProductStylesControl = (req, res) => {
@@ -110,23 +117,3 @@ exports.getRelatedProductCardControl = (req, res) => {
       res.status(500).send(err)
     })
 }
-
-exports.getProductRelatedControl = (req, res) => {
-
-  var incomingParamProductId = req.query.id;
-
-  const options = {
-    method: 'GET',
-    url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/products/${incomingParamProductId}/related`,
-    headers: { Authorization: process.env.AUTH_SECRET },
-  };
-  axios(options)
-    .then((result) => {
-      // Logic code controller need to import function
-      res.status(200).send(result.data)
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err)
-    })
-};

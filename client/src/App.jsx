@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 // Import Custom Hooks
 import useOverviewProductLogic from './hooks/useOverviewProductLogic.jsx';
-import useRelatedProductLogic from './hooks/useRelatedProductLogic.jsx';
 import useReviewsLogic from './hooks/useReviewsLogic.jsx';
 import useLocalStorageYourOutfitLogic from './hooks/useLocalStorageYourOutfitLogic.jsx';
 import useCarouselSliderLogic from './hooks/useCarouselSliderLogic.jsx';
@@ -54,8 +53,7 @@ const App = () => {
   // INITIAL GET Request for new product page
   useEffect(() => {
     if (focusProductId === 0) {
-      // This redirects for now to Item Page (Default set to product id: 71704)
-      axios.get(`/`);
+      axios.get(`/`);  // This redirects for now to Item Page (Default set to product id: 71704)
       return;
     } else {
       return getData(); // Logic Below
@@ -95,16 +93,13 @@ const App = () => {
 
     // INIT GET General Data & Styles of target product
     useOverviewProductLogic(focusProductId, setProductInfo,
-      setCurrentProductOutfitCard, setFeaturesPrimaryProduct, setProductStyles);
-
-    // INIT GET Related Products Data
-    useRelatedProductLogic(focusProductId, setRelatedProductsData);
+      setCurrentProductOutfitCard, setFeaturesPrimaryProduct, setProductStyles, setRelatedProductsData);
 
     // INIT GET Product REVIEWS Data & Meta
     useReviewsLogic(focusProductId, setReviewList, setRating, setReviewMeta);
 
     // INIT GET Cart Data
-    axios.get('/getCart')
+    axios.get('/cart')
       .then((response) => {
         setCartNumber(response.data.length);
       })
@@ -115,6 +110,10 @@ const App = () => {
 
   // OnClick Handlers
 
+  var onClickNavigateToNewProductPage = (id) => {
+    // console.log("NavigateToNewProductPage with id: ", id)
+    setFocusProductId(id);
+  }
   var onClickYourOutfit = (data) => {
     for (var i = 0; i < yourOutfitList.length; i++) {
       if (yourOutfitList[i].current_id === currentProductOutfitCard.current_id) {
@@ -125,7 +124,6 @@ const App = () => {
       return [...current, currentProductOutfitCard]
     });
   }
-
   var onClickDeleteProductYourOutfit = (idToDelete) => {
     yourOutfitList.forEach((obj, index) => {
       if (obj.current_id === idToDelete) {
@@ -137,30 +135,18 @@ const App = () => {
     })
   }
 
-  var onClickNavigateToNewProductPage = (id) => {
-    // console.log("NavigateToNewProductPage with id: ", id)
-    setFocusProductId(id);
-  }
-
   var onClickAddToCart = (sku) => {
-    axios.post('/addToCart', { params: { sku_id: sku } })
+    axios.post('/cart', { params: { sku_id: sku } })
       .then((response) => {
         // console.log("ADDED TO CART SUCCESSFUL Response: ", response);
-        axios.get('/getCart')
-          .then((response) => {
-            setCartNumber(response.data.length);
-          })
-          .catch((err) => {
-            console.log("CART GET FAILURE - ERROR: ", err)
-          })
+        setCartNumber(response.data.length);
       })
       .catch((err) => {
         console.log("CART FAILURE - ERROR: ", err)
       })
   }
-
   var onClickDeleteCart = (idToDelete) => {
-    axios.delete('/deleteCart')
+    axios.delete('/cart')
       .then((response) => {
         // console.log("DELETE CART SUCCESSFUL: ", response);
         setCartNumber(response.data.length);

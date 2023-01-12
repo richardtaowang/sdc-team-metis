@@ -50,9 +50,7 @@ app.put('/reportAnswer', QuestionsController.answerReported);
 //       Products Routes
 // ==============================================
 
-app.get('/ipCurrent', ProductsController.overviewData);
-
-app.get('/getProductStyles', ProductsController.getProductStylesControl);
+app.get('/currentProduct', ProductsController.overviewData);
 
 // ==============================================
 //       Ratings and Reviews Routes
@@ -73,9 +71,11 @@ app.put('/reportClick', ReviewsController.putReportClick);
 //       Related Routes
 // ==============================================
 
-app.get('/ipRelated', ProductsController.getRelatedProductCardControl);
+app.get('/relatedProductData', ProductsController.getRelatedProductCardControl);
 
-app.get('/getProductRelated', ProductsController.getProductRelatedControl);
+app.get('/relatedProductStylesForThumbnail', ProductsController.getProductStylesControl);
+
+// app.get('/getProductRelated', ProductsController.getProductRelatedControl); // go in main get product
 
 // ==============================================
 //       Interaction Route (Click Tracking)
@@ -86,11 +86,11 @@ app.post('/clickTrackPost', InteractionsController.postClickTrack);
 // ==============================================
 //       Cart Routes
 // ==============================================
-app.get('/getCart', CartController.getCart);
+app.get('/cart', CartController.getCart);
 
-app.post('/addToCart', CartController.postAddToCart);
+app.post('/cart', CartController.postAddToCart);
 
-app.delete('/deleteCart', CartController.deleteCart);
+app.delete('/cart', CartController.deleteCart);
 
 
 app.listen(3000, () => console.log('Our Server is listening on port 3000...'));

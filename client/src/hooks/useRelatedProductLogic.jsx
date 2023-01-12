@@ -1,11 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 
-function useRelatedProductLogic(focusID, setRelated) {
-  // GET Related Products Data
-  axios.get('/getProductRelated', { params: { id: focusID } })
-    .then(function (response) {
-      var relatedProductData = response.data;
+function useRelatedProductLogic(focusID, setRelated, relatedProductData) {
+
       var relatedAllData = [];
 
       (async () => {
@@ -14,7 +11,7 @@ function useRelatedProductLogic(focusID, setRelated) {
           relatedObj.related_id = relatedId;
 
           // Related Products GET Data
-          return axios.get(`/ipRelated`, { params: { id: relatedId } })
+          return axios.get(`/relatedProductData`, { params: { id: relatedId } })
             .then(function (response) {
 
               relatedObj.related_name = response.data.name;
@@ -23,7 +20,7 @@ function useRelatedProductLogic(focusID, setRelated) {
               relatedObj.related_features = response.data.features;
 
               // Related Products GET Thumbnail
-              return axios.get('/getProductStyles', { params: { id: relatedId } })
+              return axios.get('/relatedProductStylesForThumbnail', { params: { id: relatedId } })
                 .then(function (response) {
                   var allStylesArray = response.data.results;
                   for (var i = 0; i < allStylesArray.length; i++) {
@@ -56,10 +53,6 @@ function useRelatedProductLogic(focusID, setRelated) {
           console.error(err)
         }
       })()
-    })
-    .catch(function (error) {
-      console.log('error GET RelatedProducts: ', error);
-    })
 };
 
 export default useRelatedProductLogic;
