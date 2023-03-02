@@ -14,6 +14,7 @@ const ReviewForm = (props) => {
   const [images, setImages] = useState([]);
   const [summaryDefault, setSummaryDefault] = useState('');
   const [bodyDefault, setBodyDefault] = useState('');
+  const [recommended, setRecommended] = useState(null);
 
   const summaryClick = (event) => {
     setSummaryDefault(null);
@@ -79,10 +80,13 @@ const ReviewForm = (props) => {
       formObj.characteristics[charID["Fit"]] = Number(event.target.fit.value);
     }
     if(event.target.recommend.value) {
-      formObj.recommend = true;
-    } else {
-      formObj.recommend = false;
+      formObj.recommend = recommended;
     }
+    // if(event.target.recommend.value) {
+    //   formObj.recommend = true;
+    // } else {
+    //   formObj.recommend = false;
+    // }
 
     props.handleFormSubmit(formObj);
   }
@@ -185,9 +189,9 @@ const ReviewForm = (props) => {
         <br></br>
         <label>
           <h3>Do you recommend this product?*</h3>
-          <input type="radio" id="yes" name="recommend" value={true} required/>
+          <input type="radio" id="yes" name="recommend" value={true} onClick={()=>{setRecommended(true)}} required/>
           <label>yes</label>
-          <input type="radio" id="no" name="recommend" value={false} required/>
+          <input type="radio" id="no" name="recommend" value={false} onClick={()=>{setRecommended(false)}} required/>
           <label>no</label>
         </label>
           <br></br>

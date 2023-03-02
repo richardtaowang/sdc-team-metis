@@ -11,7 +11,9 @@ function useLocalStorageYourOutfitLogic (setYourOutfitList, setFocusProductId, y
         setYourOutfitList(savedOutfitState);
       }
     }
-    var targetIdInUrl = parseInt(window.location.pathname[4] + window.location.pathname[5] + window.location.pathname[6] + window.location.pathname[7] + window.location.pathname[8]);
+    // var targetIdInUrl = parseInt(window.location.pathname[4] + window.location.pathname[5] + window.location.pathname[6] + window.location.pathname[7] + window.location.pathname[8]);
+    var targetIdInUrl = parseInt(window.location.pathname.match(/\d+/));
+
     setFocusProductId(targetIdInUrl);
   }, [])
 

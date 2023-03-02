@@ -69,7 +69,7 @@ const App = () => {
     // observer for lazy loading and then callback action to GET QnA data
     const observer = new IntersectionObserver((yourOutfitDiv) => {
       if (yourOutfitDiv[0].isIntersecting) {
-        // console.log("Observed Boundary! Loading QnA and Review Modules...");
+        console.log("Observed Boundary! Loading QnA and Review Modules...");
         setBottomHalfView(true);
 
         axios.get('/getProductQnA', { params: { id: focusProductId } })
@@ -181,7 +181,7 @@ const App = () => {
     <div onClick={(event)=>handleTrackClick(event.target)}>
 
       <Header cartNumber={cartNumber} onClickDeleteCart={onClickDeleteCart} />
-      <h2 data-testid='testYourOutfitCard'>Golden Fan Shop</h2>
+      <h2 ref={loadBottomBoundary} data-testid='testYourOutfitCard'>Golden Fan Shop</h2>
 
       <main className="initSpinnerContainer">
         <Suspense fallback={<img src={Spinner} className='initSpinner' alt="Loading..." />}>
@@ -204,6 +204,7 @@ const App = () => {
           {scrollToggleRelatedProgress && scrollRelatedProgress < 100 && <RightScrollButtonCarousel moveRight={moveRight} />}
         </div><br /><br />
         <div widgetname="YourOutfitCarousel" ref={loadBottomBoundary}>YOUR OUTFIT</div>
+        {/* <div widgetname="YourOutfitCarousel">YOUR OUTFIT</div> */}
         <div ref={yourOutfitCarourselRef} className="sidescroller" onScroll={handleSideScroll2} widgetname="Your Outfit">
           <Suspense fallback={<img src={Spinner} alt="Loading..." />}>
             {scrollYourOutfitProgress > 3.3 ? (<LeftScrollButtonCarousel moveLeft={moveLeft2} />) : null}

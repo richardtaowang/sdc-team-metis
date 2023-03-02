@@ -63,7 +63,7 @@ const RelatedCard = React.forwardRef((props, ref) => {
       </button>
       <a widgetname="Related/YourOutfit" href={'/ip/' + props.related_id} style={{textDecoration: 'none'}} onClick={onClickNavigate} >
         <div widgetname="Related/YourOutfit">
-          <img widgetname="Related/YourOutfit" className='productImageInCard' src={props.related_thumbnail ? props.related_thumbnail : 'https://vignette.wikia.nocookie.net/marvelcinematicuniverse/images/9/9b/Reality_Stone_VFX.png/revision/latest?cb=20190427012609'} alt="..."/>
+          <img widgetname="Related/YourOutfit" className='productImageInCard' src={props.related_thumbnail ? props.related_thumbnail : 'https://images.unsplash.com/photo-1553830591-d8632a99e6ff?ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=300&amp;q=80'} alt="..."/>
         </div>
 
         <div widgetname="Related/YourOutfit">

@@ -54,7 +54,7 @@ https://www.dropbox.com/s/k4kmclh2593wgda/Final%20deployment%20-%20Screen%20Shot
 
 
 ## ☕ Team Members
-Richard Wang (Related Products) - CTO
+Richard Tao Wang (Related Products) - CTO
 
 Daniel Halper (Overview)- CTO
 

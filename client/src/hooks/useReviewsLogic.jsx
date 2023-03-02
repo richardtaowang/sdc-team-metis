@@ -6,7 +6,6 @@ function useReviewsLogic(focusProductId, setReviewList, setRating, setReviewMeta
 
   axios.get('/getProductReviews', { params: { id: focusProductId } })
   .then(function (response) {
-    // console.log("🚀 ~ file: App.jsx:190 ~ response", response)
     var reviews = response.data[0].results;
     setReviewList(reviews);
     var average = getAverageRating(reviews);

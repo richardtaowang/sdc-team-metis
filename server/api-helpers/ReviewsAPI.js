@@ -8,12 +8,14 @@ exports.initReviewData = (req, res) => {
 
   const options = {
     method: 'GET',
+    // url: `http://localhost:8080/reviews?product_id=${incomingParamProductId}`,
     url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews?product_id=${incomingParamProductId}`,
     headers: { Authorization: process.env.AUTH_SECRET },
   };
 
   const options2 = {
     method: 'GET',
+    // url: `http://localhost:8080/reviews/meta?product_id=${incomingParamProductId}`,
     url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews/meta?product_id=${incomingParamProductId}`,
     headers: { Authorization: process.env.AUTH_SECRET }
   };
@@ -27,7 +29,10 @@ exports.initReviewData = (req, res) => {
 
     axios(options2)
       .then((result) => {
+
         combined.push(result.data);
+        // console.log("🚀 ~ file: ReviewsAPI.js:32 ~ .then ~ combined", combined)
+
         res.status(200).send(combined);
       })
       .catch((err) => {
@@ -47,6 +52,7 @@ exports.getProductReviewsControl = (req, res) => {
 
   const options = {
     method: 'GET',
+    // url: `http://localhost:8080/reviews?product_id=${incomingParamProductId}`,
     url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews?product_id=${incomingParamProductId}`,
     headers: { Authorization: process.env.AUTH_SECRET },
   };
@@ -63,10 +69,11 @@ exports.getProductReviewsControl = (req, res) => {
 exports.postReviewForm = (req, res) => {
 
   var incomingReview = req.body;
-  // console.log('this is the incoming review: ', incomingReview);
+  console.log('this is the incoming review: ', incomingReview);
 
   const options = {
     method: 'POST',
+    // url: `http://localhost:8080/reviews`,
     url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews`,
     headers: { Authorization: process.env.AUTH_SECRET },
     "Content-Type": 'application/json',
@@ -107,6 +114,7 @@ exports.putHelpClick = (req, res) => {
 
   const options = {
     method: 'PUT',
+    // url: `http://localhost:8080/reviews/${review_id}/helpful`,
     url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews/${review_id}/helpful`,
     headers: { Authorization: process.env.AUTH_SECRET },
     // data: review_id
@@ -130,6 +138,7 @@ exports.putReportClick = (req, res) => {
 
   const options = {
     method: 'PUT',
+    // url: `http://localhost:8080/reviews/${review_id}/report`,
     url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews/${review_id}/report`,
     headers: { Authorization: process.env.AUTH_SECRET },
     // data: review_id
